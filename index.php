@@ -13,6 +13,11 @@ if ($conn->connect_error) {
 }
 
 if (isset($_POST['register'])) {
+    // Check if the registration is for admin
+    if ($_POST['role'] !== 'Admin') {
+        die("Only admin registration is allowed!");
+    }
+
     $first_name = $_POST['first_name'];
     $last_name = $_POST['last_name'];
     $email = $_POST['email'];
@@ -50,7 +55,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADMT Farm Management - Register</title>
+    <title>ADMT Farm Management - Admin Registration</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -70,14 +75,9 @@ $conn->close();
         </div>
 
         <div class="form-container">
-            <div class="role-selection">
-                <button class="role-button active" onclick="showForm('User')">User</button>
-                <button class="role-button" onclick="showForm('Employee')">Employee</button>
-                <button class="role-button" onclick="showForm('Admin')">Admin</button>
-            </div>
 
             <form action="register.php" method="POST" id="registrationForm">
-                <h2>Register as <span id="roleTitle">User</span></h2>
+                <h2>Register as Admin</h2>
                 <input type="text" name="first_name" placeholder="First Name" required>
                 <input type="text" name="last_name" placeholder="Last Name" required>
                 <input type="email" name="email" placeholder="Email" required>
@@ -94,24 +94,12 @@ $conn->close();
                     </label>
                 </div>
 
-                <input type="hidden" name="role" id="roleInput" value="User">
+                <input type="hidden" name="role" value="Admin">
                 <input type="submit" name="register" value="Register">
                 <p><a href="login.php">Already have an account?</a></p>
             </form>
         </div>
     </div>
-
-    <script>
-        function showForm(role) {
-            document.getElementById('roleTitle').innerText = role;
-            document.getElementById('roleInput').value = role;
-
-            let buttons = document.querySelectorAll('.role-button');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            
-            event.target.classList.add('active');
-        }
-    </script>
 
 </body>
 </html>
