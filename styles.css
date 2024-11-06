@@ -48,55 +48,50 @@ nav ul li a {
     overflow: hidden;
 }
 
-/* Other styles remain the same */
+.welcome {
+    display: flex;
+    color: rgb(177, 170, 170);
+    font-size: 4em;
+    margin: 0 auto;
+    letter-spacing: 2px;
+}
 
 .welcome {
-    flex: 1;
-    background: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-left: 40px;
+    width: 28ch;
+    animation: typing 6s steps(28) forwards, blink .5s step-end infinite alternate;
+    white-space: nowrap; 
+    overflow: hidden; 
+    border-right: 3px solid; 
+    font-family: monospace; 
+    font-size: 2em;
 }
 
-.welcome h2 {
-    color: white;
-    font-size: 4em;
-    white-space: nowrap; /* Prevent the text from wrapping */
-    overflow: hidden; /* Hide the overflowing text */
-    border-right: 3px solid white; /* Simulate the cursor effect */
-    width: 0; /* Start with no text visible */
-    animation: typing 3.5s steps(30, end), blink 0.75s step-end infinite; /* Animation */
-}
-
-/* Keyframes for typing effect */
 @keyframes typing {
-    from { width: 0; }
-    to { width: 100%; } /* Full text will be revealed */
+    0%, 50%{
+        width: 0;
+    }
+    50%{
+        width: 28ch;
+    }
 }
 
-/* Keyframes for blinking cursor effect */
 @keyframes blink {
-    from { border-right-color: white; }
-    to { border-right-color: transparent; }
+    50% {
+        border-color: transparent
+    }
 }
-
 
 .form-container {
     flex: 1;
     padding: 40px;
     background-color: rgba(255, 255, 255, 0.9);
-    margin-left: 50px; /* Move the form to the right */
+    margin-left: 50px; 
     display: flex;
     flex-direction: column;
     justify-content: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-form h2 {
-    margin-bottom: 20px;
-    color: #333;
-}
 
 input[type="text"], input[type="email"], input[type="password"] {
     width: 100%;

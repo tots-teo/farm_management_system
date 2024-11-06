@@ -1,6 +1,6 @@
 <?php
 // Database connection (adjust credentials as needed)
-$servername = "localhost";
+$servername = "localhost:3307";
 $username = "root";
 $password = "";
 $dbname = "farm_management";
