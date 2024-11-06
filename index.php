@@ -55,7 +55,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADMT Farm Management - Admin Registration</title>
+    <title>MJCK Farm Management - Admin Registration</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>

@@ -64,13 +64,13 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADMT Farm Management - Reset Password</title>
+    <title>MJCK Farm Management - Reset Password</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         .message {
             margin: 20px 0;
             padding: 10px;
-            border radius: 5px;
+            border-radius: 5px;
             background-color: #f8f9fa;
             border: 1px solid #ddd;
         }
