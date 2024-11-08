@@ -17,7 +17,7 @@ if ($conn->connect_error) {
 $error_message = "";
 
 if (isset($_POST['login'])) {
-    $email = $_POST['email'];
+    $email = $conn->real_escape_string($_POST['email']);
     $password = $_POST['password'];
 
     // Fetch user from database
@@ -33,19 +33,11 @@ if (isset($_POST['login'])) {
         if (password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['role'] = $user['role'];
-            
-            // Redirect based on role
-            switch($user['role']) {
-                case 'Admin':
-                    header("Location: admin_dashboard.php");
-                    break;
-                case 'Employee':
-                    header("Location: employee_dashboard.php");
-                    break;
-                case 'User':
-                    header("Location: user_dashboard.php");
-                    break;
-            }
+            $_SESSION['first_name'] = $user['first_name'];
+            $_SESSION['last_name'] = $user['last_name'];
+    
+            // Redirect to dashboard for all roles
+            header("Location: dashboard.php");
             exit();
         } else {
             $error_message = "Invalid password!";
@@ -53,6 +45,12 @@ if (isset($_POST['login'])) {
     } else {
         $error_message = "User not found!";
     }
+}
+
+// Check for registration success message
+$registration_success = "";
+if (isset($_GET['registered']) && $_GET['registered'] == 1) {
+    $registration_success = "Registration successful! Please log in.";
 }
 
 $conn->close();
@@ -71,13 +69,18 @@ $conn->close();
             margin-bottom: 10px;
             text-align: center;
         }
+        .success-message {
+            color: #008000;
+            margin-bottom: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <header>
         <nav>
             <ul>
-                <li><a href="#">HOME</a></li>
+                <li><a href="index.php">HOME</a></li>
                 <li><a href="#">ABOUT US</a></li>
                 <li><a href="#">CONTACT</a></li>
             </ul>
@@ -90,6 +93,11 @@ $conn->close();
         </div>
 
         <div class="form-container">
+            <?php if ($registration_success): ?>
+                <div class="success-message">
+                    <?php echo $registration_success; ?>
+                </div>
+            <?php endif; ?>
             
             <?php if ($error_message): ?>
                 <div class="error-message">
@@ -108,7 +116,7 @@ $conn->close();
                 </div>
                 
                 <div class="register-link">
-                    <p>Don't have an account? <a href="index.php">Register here</a></p>
+                    <p>Don't have an account? <a href="register.php">Register here</a></p>
                 </div>
             </form>
         </div>
