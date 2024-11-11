@@ -35,7 +35,7 @@ if (isset($_POST['login'])) {
             $_SESSION['role'] = $user['role'];
             $_SESSION['first_name'] = $user['first_name'];
             $_SESSION['last_name'] = $user['last_name'];
-    
+
             // Redirect to dashboard for all roles
             header("Location: dashboard.php");
             exit();
@@ -43,7 +43,7 @@ if (isset($_POST['login'])) {
             $error_message = "Invalid password!";
         }
     } else {
-        $error_message = "User not found!";
+        $error_message = "User  not found!";
     }
 }
 
@@ -73,6 +73,32 @@ $conn->close();
             color: #008000;
             margin-bottom: 10px;
             text-align: center;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50; /* Green button color */
+            color: white; /* Text color */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer on hover */
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+        .link-button {
+            display: block; /* Make the link take the full width */
+            color: #4CAF50; /* Green text color */
+            text-decoration: none; /* No underline */
+            margin-top: 10px; /* Spacing above links */
+            text-align: center; /* Center the text */
+        }
+        .link-button:hover {
+            text-decoration: underline; 
+        }
+        .account-message {
+            text-align: center;
+            margin-top: 10px; /* Spacing above the message */
         }
     </style>
 </head>
@@ -111,12 +137,10 @@ $conn->close();
                 <input type="password" name="password" placeholder="Password" required>
                 <input type="submit" name="login" value="Login">
                 
-                <div class="forgot-password">
-                    <a href="forgot_password.php">Forgot Password?</a>
-                </div>
+                <a href ="forgot_password.php" class="link-button">Forgot Password?</a>
                 
-                <div class="register-link">
-                    <p>Don't have an account? <a href="register.php">Register here</a></p>
+                <div class="account-message">
+                    <p>Don't have an account? <a href="register.php" class="link-button">Register</a></p>
                 </div>
             </form>
         </div>
