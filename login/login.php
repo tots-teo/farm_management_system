@@ -48,44 +48,6 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MJCK Farm Management - Login</title>
     <link rel="stylesheet" href="../styles.css">
-    <style>
-        .error-message {
-            color: #ff0000;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        .success-message {
-            color: #008000;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50; 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
-            cursor: pointer; 
-        }
-        input[type="submit"]:hover {
-            background-color: #45a049; 
-        }
-        .link-button {
-            display: block; 
-            color: #4CAF50; 
-            text-decoration: none; 
-            margin-top: 10px; 
-            text-align: center; 
-        }
-        .link-button:hover {
-            text-decoration: underline; 
-        }
-        .account-message {
-            text-align: center;
-            margin-top: 10px; 
-        }
-    </style>
 </head>
 <body>
     <header>

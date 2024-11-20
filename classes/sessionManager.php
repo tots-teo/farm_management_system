@@ -3,7 +3,10 @@ include '../db.php';
 
 class SessionManager {
     public function __construct() {
-        $this->startSession();  // Automatically start session
+        // Check if session is already started
+        if (session_status() === PHP_SESSION_NONE) {
+            $this->startSession();  // Automatically start session if not already started
+        }
     }
 
     public function startSession() {

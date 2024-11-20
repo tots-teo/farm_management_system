@@ -3,20 +3,50 @@ require_once '../db.php';
 require_once '../classes/user.php';
 require_once '../classes/sessionManager.php';
 
-$database = new Database('localhost', 'username', 'password', 'database_name');
-$conn = $database->getConnection();
+// Create a single instance of SessionManager which will handle session start
 $sessionManager = new SessionManager();
-$sessionManager->startSession();
+
+class Database {
+    private $servername;
+    private $username;
+    private $password;
+    private $dbname;
+    private $conn;
+
+    public function __construct($servername, $username, $password, $dbname) {
+        $this->servername = $servername;
+        $this->username = $username;
+        $this->password = $password;
+        $this->dbname = $dbname;
+        $this->connect();
+    }
+
+    private function connect() {
+        $this->conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
+        if ($this->conn->connect_error) {
+            die("Connection failed: " . $this->conn->connect_error);
+        }
+    }
+
+    public function getConnection() {
+        return $this->conn;
+    }
+}
+
+// Create a database connection
+$database = new Database('localhost:3307', 'root', '', 'farm_management');
+$conn = $database->getConnection();
 
 // Handle login form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
+    // Pass the database connection to the User class
     $user = new User($conn);
     $loggedInUser  = $user->login($email, $password);
     if ($loggedInUser ) {
-        $sessionManager->setUser Session($loggedInUser );
+        $sessionManager->setUserSession($loggedInUser );
         header("Location: ../dashboard/dashboard.php");
         exit();
     } else {

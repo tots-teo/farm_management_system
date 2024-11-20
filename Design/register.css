@@ -6,7 +6,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-image: url('farm-background.jpg'); 
+    background-image: 'farm-background.jpg'; 
     background-size: cover;
     background-position: center;
     height: 100vh;
@@ -42,19 +42,19 @@ nav ul li a {
 .container {
     position: relative;
     display: flex;
-    flex-direction: column; /* Changed to column to stack welcome and form */
+    flex-direction: column; /* Stack welcome and form */
     width: 90%;
     max-width: 1200px;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent background */
     border-radius: 10px;
     overflow: hidden;
     padding: 20px; /* Added padding for internal spacing */
 }
 
 .welcome {
-    color: #333; /* Changed color for better visibility on white background */
+    color: #333;
     font-size: 2em;
-    margin: 0 auto 20px; /* Added bottom margin for spacing */
+    margin: 0 auto 20px;
     letter-spacing: 2px;
     text-align: center;
     font-family: monospace;
@@ -88,8 +88,8 @@ nav ul li a {
     flex-direction: column;
     justify-content: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px; /* Added border-radius for consistency */
-    margin-top: 20px; /* Added top margin for spacing from welcome message */
+    border-radius: 8px;
+    margin-top: 20px;
 }
 
 input[type="text"], input[type="email"], input[type="password"] {
@@ -100,42 +100,18 @@ input[type="text"], input[type="email"], input[type="password"] {
     border-radius: 5px;
 }
 
-input[type="submit"] {
+button {
     width: 100%;
     padding: 10px;
-    background-color: #007BFF;
+    background-color: #4CAF50; /* Primary button color */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
-input[type="submit"]:hover {
-    background-color: #0056b3;
-}
-
-.gender-selection {
-    margin-bottom: 20px;
-}
-
-.role-selection {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-}
-
-.role-button {
-    padding: 10px 20px;
-    background-color: #f0f0f0;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.1em;
-}
-
-.role-button.active {
-    background-color: #007BFF;
-    color: white;
+button:hover {
+    background-color: #45a049; /* Darker shade on hover #4CAF50*/ 
 }
 
 .error-message {
@@ -143,34 +119,23 @@ input[type="submit"]:hover {
     margin-bottom: 10px;
     text-align: center;
 }
+
 .success-message {
     color: #008000;
     margin-bottom: 10px;
     text-align: center;
 }
-input[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50; 
-    color: white; 
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer; 
-}
-input[type="submit"]:hover {
-    background-color: #45a049; 
-}
-.link-button {
-    display: block; 
-    color: #4CAF50; 
-    text-decoration: none; 
-    margin-top: 10px; 
-    text-align: center; 
-}
-.link-button:hover {
-    text-decoration: underline; 
-}
-.account-message {
+
+.login-link {
     text-align: center;
-    margin-top: 10px; 
+    margin-top: 15px;
+}
+
+.login-link a {
+    color: #4CAF50; /* Link color */
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline; /* Underline on hover */
 }
