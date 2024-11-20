@@ -1,44 +1,61 @@
 <?php
-session_start();
-include '../db.php';
+require_once '../db.php';
+require_once '../classes/user.php';
+require_once '../classes/sessionManager.php';
 
-$error_message = "";
+// Create a single instance of SessionManager which will handle session start
+$sessionManager = new SessionManager();
 
-if (isset($_POST['login'])) {
-    $email = $conn->real_escape_string($_POST['email']);
-    $password = $_POST['password'];
+// Initialize variables to avoid undefined variable warnings
+$registration_success = null; // Initialize to null
+$error_message = null; // Initialize to null
 
-    $sql = "SELECT * FROM users WHERE email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+class Database {
+    private $servername;
+    private $username;
+    private $password;
+    private $dbname;
+    private $conn;
 
-    if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
-       
-        if (password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['role'] = $user['role'];
-            $_SESSION['first_name'] = $user['first_name'];
-            $_SESSION['last_name'] = $user['last_name'];
+    public function __construct($servername, $username, $password, $dbname) {
+        $this->servername = $servername;
+        $this->username = $username;
+        $this->password = $password;
+        $this->dbname = $dbname;
+        $this->connect();
+    }
 
-            header("Location: ../dashboard/dashboard.php");
-            exit();
-        } else {
-            $error_message = "Invalid password!";
+    private function connect() {
+        $this->conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
+        if ($this->conn->connect_error) {
+            die("Connection failed: " . $this->conn->connect_error);
         }
-    } else {
-        $error_message = "User  not found!";
+    }
+
+    public function getConnection() {
+        return $this->conn;
     }
 }
 
-$registration_success = "";
-if (isset($_GET['registered']) && $_GET['registered'] == 1) {
-    $registration_success = "Registration successful! Please log in.";
-}
+$database = new Database('localhost:3307', 'root', '', 'farm_management');
+$conn = $database->getConnection();
 
-$conn->close();
+// Handle login form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Pass the database connection to the User class
+    $user = new User($conn);
+    $loggedInUser   = $user->login($email, $password);
+    if ($loggedInUser ) {
+        $sessionManager->setUserSession($loggedInUser );
+        header("Location: ../dashboard/dashboard.php");
+        exit();
+    } else {
+        $error_message = "Invalid email or password.";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -84,7 +101,7 @@ $conn->close();
                 <input type="password" name="password" placeholder="Password" required>
                 <input type="submit" name="login" value="Login">
                 
-                <a href ="forgot_password.php" class="link-button">Forgot Password?</a>
+                <a href="forgot_password.php" class="link-button">Forgot Password?</a>
                 
                 <div class="account-message">
                     <p>Don't have an account? <a href="register.php" class="link-button">Register</a></p>

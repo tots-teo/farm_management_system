@@ -1,61 +1,64 @@
 <?php
-// Database connection
-$servername = "localhost:3307";
-$username = "root";
-$password = "";
-$dbname = "farm_management";
+include '../db.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+class PasswordReset {
+    private $conn;
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+    public function __construct($databaseConnection) {
+        $this->conn = $databaseConnection;
+    }
 
-// Add reset_token column if it doesn't exist
-$check_column = "SHOW COLUMNS FROM users LIKE 'reset_token'";
-$result = $conn->query($check_column);
+    public function addResetTokenColumn() {
+        $check_column = "SHOW COLUMNS FROM users LIKE 'reset_token'";
+        $result = $this->conn->query($check_column);
 
-if ($result->num_rows == 0) {
-    $alter_table = "ALTER TABLE users ADD COLUMN reset_token VARCHAR(255) DEFAULT NULL";
-    if ($conn->query($alter_table) === TRUE) {
-        echo "Reset token column added successfully";
-    } else {
-        echo "Error adding reset token column: " . $conn->error;
+        if ($result->num_rows == 0) {
+            $alter_table = "ALTER TABLE users ADD COLUMN reset_token VARCHAR(255) DEFAULT NULL";
+            if ($this->conn->query($alter_table) === TRUE) {
+                echo "Reset token column added successfully";
+            } else {
+                echo "Error adding reset token column: " . $this->conn->error;
+            }
+        }
+    }
+
+    public function requestPasswordReset($email) {
+        // Prepare statement to prevent SQL injection
+        $sql = "SELECT * FROM users WHERE email = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            // Generate a random token
+            $token = bin2hex(random_bytes(32));
+            // Update the user's reset token
+            $update_sql = "UPDATE users SET reset_token = ? WHERE email = ?";
+            $update_stmt = $this->conn->prepare($update_sql);
+            $update_stmt->bind_param("ss", $token, $email);
+
+            if ($update_stmt->execute()) {
+                $reset_link = "http://localhost/FinalPHP/reset_password.php?token=" . $token;
+                return "Password reset link (for demonstration): <br>" . $reset_link;
+            } else {
+                return "Error updating reset token.";
+            }
+        } else {
+            return "No account found with that email address.";
+        }
     }
 }
+
+// Usage
+$conn = new mysqli("localhost:3307", "root", "", "farm_management");
+$passwordReset = new PasswordReset($conn);
+$passwordReset->addResetTokenColumn();
 
 $message = "";
-
 if (isset($_POST['reset'])) {
     $email = $_POST['email'];
-    
-    $sql = "SELECT * FROM users WHERE email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-       
-        $token = bin2hex(random_bytes(32));
-        
-        $update_sql = "UPDATE users SET reset_token = ? WHERE email = ?";
-        $update_stmt = $conn->prepare($update_sql);
-        $update_stmt->bind_param("ss", $token, $email);
-        
-        if ($update_stmt->execute()) {
-            
-            $reset_link = "http://localhost/FinalPHP/reset_password.php?token=" . $token;
-            
-            $message = "Password reset link (for demonstration): <br>" . $reset_link;
-            
-        } else {
-            $message = "Error updating reset token.";
-        }
-    } else {
-        $message = "No account found with that email address.";
-    }
+    $message = $passwordReset->requestPasswordReset($email);
 }
 
 $conn->close();
@@ -68,53 +71,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MJCK Farm Management - Forgot Password</title>
     <link rel="stylesheet" href="../styles.css">
-    <style>
-        .message {
-            margin: 20px 0;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            word-wrap: break-word;
-        }
-        .form-container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        input[type="email"] {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        input[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-        .login-link {
-            text-align: center;
-            margin-top: 15px;
-        }
-        .login-link a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    
 </head>
 <body>
     <header>
