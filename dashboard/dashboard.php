@@ -3,12 +3,17 @@ session_start();
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
-    header("Location: login.php");
+    header("Location: login page/login.php");
     exit();
 }
 
 // Check user role for access control
 $role = $_SESSION['role'];
+
+// Placeholder values for statistics (replace with actual database queries)
+$numberOfLivestock = 150; // Example value
+$numberOfAdmins = 3;      // Example value
+$numberOfTasks = 5;       // Example value
 ?>
 
 <!DOCTYPE html>
@@ -66,7 +71,7 @@ $role = $_SESSION['role'];
             margin-bottom: 15px;
             border-radius: 50%;
             object-fit: cover;
-            object-position: center;
+            object-position : center;
             border: 4px solid #4CAF50;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             transition: transform 0.3s ease;
@@ -95,12 +100,10 @@ $role = $_SESSION['role'];
             transition: all 0.3s ease;
         }
 
-        .sidebar a i {
+        .sidebar a img {
+            width: 24px;
+            height: 24px;
             margin-right: 10px;
-            font-size: 1.2em;
-            color: #4CAF50;
-            width: 25px;
-            text-align: center;
         }
 
         .sidebar a.active,
@@ -108,12 +111,6 @@ $role = $_SESSION['role'];
             background-color: #383b4f;
             color: #4CAF50;
             transform: translateX(10px);
-        }
-
-        .sidebar a img {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
         }
 
         .logout-btn {
@@ -153,6 +150,7 @@ $role = $_SESSION['role'];
         .dashboard-overview {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: 700px 1fr; /* Make the first row larger for the map overview */
             gap: 20px;
         }
 
@@ -163,6 +161,10 @@ $role = $_SESSION['role'];
             text-align: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             border: 1px solid #e0e0e0;
+            height: 100px; /* Decrease the height of the stats boxes */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
         }
 
         .stats-box h4 {
@@ -174,11 +176,27 @@ $role = $_SESSION['role'];
             font-size: 24px;
             font-weight: bold;
             color: #333;
+            margin: 0; /* Remove margin for better alignment */
         }
 
         .stats-box span {
             font-size: 14px;
             color: #4CAF50;
+        }
+
+        .stats-box.map-overview {
+            grid-row: 1 / 2; /* Make the map overview span the full height of the first row */
+            height: 100%; /* Fill the available space in the first row */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
+        }
+
+        .stats-box.map-overview img {
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 8px; 
         }
     </style>
 </head>
@@ -216,7 +234,25 @@ $role = $_SESSION['role'];
         </header>
 
         <div class="dashboard-overview">
-            <!-- Dashboard content can be added here later -->
+            <div class="stats-box map-overview">
+                <h4>Map Overview</h4>
+                <img src="mjck map.jpg" alt="MJCK Map">
+            </div>
+            <div class="stats-box">
+                <h4>Number of Livestock</h4>
+                <p><?php echo $numberOfLivestock; ?></p>
+                <span>Animals</span>
+            </div>
+            <div class="stats-box">
+                <h4>Number of Admins</h4>
+                <p><?php echo $numberOfAdmins; ?></p>
+                <span>Admins</span>
+            </div>
+            <div class="stats-box">
+                <h4>Tasks to Do</h4>
+                <p><?php echo $numberOfTasks; ?></p>
+                <span>Pending Tasks</span>
+            </div>
         </div>
     </div>
 </body>
