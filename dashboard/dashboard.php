@@ -31,7 +31,7 @@ $numberOfTasks = 5;       // Example value
             <img src="../mjck farm.jpg" alt="MJCK Farm Logo">
             <h3>MJCK Farm</h3>
         </div>
-        <a href="livestock_management.php">
+        <a href="../livestock management/livestock_management.php">
             <img src="../assets/livestock.png" alt="Livestock">Livestock Management
         </a>
         <a href="crop_management.php">
