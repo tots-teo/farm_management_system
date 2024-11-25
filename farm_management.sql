@@ -16,10 +16,9 @@ CREATE TABLE `users`
 ALTER TABLE users
 ADD COLUMN reset_token VARCHAR(255) DEFAULT NULL;
 
-CREATE TABLE livestock (
+CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    type VARCHAR(100) NOT NULL,
-    age INT NOT NULL,
+    category_name VARCHAR(255) NOT NULL,
+    category_code VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

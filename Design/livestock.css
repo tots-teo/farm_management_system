@@ -124,7 +124,7 @@ header h2 {
 .dashboard-overview {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 500px 1fr; /* Make the first row larger for the map overview */
+    grid-template-rows: 700px 1fr; /* Make the first row larger for the map overview */
     gap: 20px;
 }
 
@@ -150,8 +150,7 @@ header h2 {
     font-size: 24px;
     font-weight: bold;
     color: #333;
-    margin: 0;
-    margin-bottom: 0px;
+    margin: 0; /* Remove margin for better alignment */
 }
 
 .stats-box span {
@@ -160,14 +159,93 @@ header h2 {
 }
 
 .stats-box.map-overview {
-    grid-row: 1 / 2;
-    height: 80%; 
+    grid-row: 1 / 2; /* Make the map overview span the full height of the first row */
+    height: 80%; /* Fill the available space in the first row */
     display: flex;
     flex-direction: column;
-    justify-content: center; 
-    align-items: center; 
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
 }
 
 .stats-box.map-overview h4{
-    margin-bottom: 50px; 
+    margin-bottom: 150px; 
 }
+
+/* Styles for the category registration container */
+.container {
+    max-width: 800px;
+    margin: 20px auto; /* Center the container */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+.form-container {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+

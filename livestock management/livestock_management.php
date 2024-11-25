@@ -7,24 +7,35 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
     exit();
 }
 
-// Include the livestock management file
+// Include the livestock management file and database connection
 include 'livestock.php';
 include '../db.php';
 
-// Now you can access the livestock data
+// Create an instance of Livestock
 $livestockManager = new Livestock($conn);
-$livestockData = $livestockManager->getAllLivestock();
 
-// Handle form submission
+// Handle form submission for adding category
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['animals'])) {
-        $selectedAnimals = $_POST['animals'];
-        // Process the selected animals as needed
-        echo "You selected: " . implode(", ", $selectedAnimals);
-    } else {
-        echo "No animals selected.";
+    if (isset($_POST['add_category'])) {
+        $category = $_POST['category'];
+        $code = $_POST['code'];
+
+        // Add category to the database
+        $livestockManager->addCategory($category, $code);
+        header("Location: livestock_management.php"); // Redirect to avoid resubmission
+        exit();
     }
 }
+
+// Handle deletion of category
+if (isset($_GET['delete_id'])) {
+    $livestockManager->deleteCategory($_GET['delete_id']);
+    header("Location: livestock_management.php"); // Redirect after deletion
+    exit();
+}
+
+// Fetch all category data
+$categoryData = $livestockManager->getAllCategories();
 ?>
 
 <!DOCTYPE html>
@@ -32,44 +43,90 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Livestock Management</title>
+    <title>Category Registration</title>
     <link rel="stylesheet" href="../Design/dashboard.css">
+    <link rel="stylesheet" href="../Design/livestock.css"> <!-- Include the updated livestock.css -->
 </head>
 <body>
-    <h2>Livestock Management</h2>
-    
-    <!-- Multiple selection dropdown -->
-    <form method="POST" action="">
-        <label for="animals">Select Animals:</label>
-        <select id="animals" name="animals[]" multiple>
-            <option value="pig">Pig</option>
-            <option value="cow">Cow</option>
-            <option value="goat">Goat</option>
-            <option value="chicken">Chicken</option>
-        </select>
-        <input type="submit" value="Submit">
-    </form>
-    
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Age</th>
-            <th>Action</th>
-        </tr>
-        <?php foreach ($livestockData as $livestock): ?>
-        <tr>
-            <td><?php echo htmlspecialchars($livestock['id']); ?></td>
-            <td><?php echo htmlspecialchars($livestock['name']); ?></td>
-            <td><?php echo htmlspecialchars($livestock['type']); ?></td>
-            <td><?php echo htmlspecialchars($livestock['age']); ?></td>
-            <td>
-                <a href="edit_livestock.php?id=<?php echo $livestock['id']; ?>">Edit</a>
-                <a href="delete_livestock.php?id=<?php echo $livestock['id']; ?>">Delete</a>
-            </td>
-        </tr>
-        <?php endforeach; ?>
-    </table>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="../mjck farm.jpg" alt="MJCK Farm Logo">
+            <h3>MJCK Farm</h3>
+        </div>
+        <a href="../dashboard/dashboard.php">
+            <img src="../assets/dashboard.png" alt="Livestock">Dashboard
+        </a>
+        <a href="../livestock management/livestock_management.php">
+            <img src="../assets/livestock.png" alt="Livestock">Livestock Management
+        </a>
+        <a href="../crop_management.php">
+            <img src="../assets/crop.png" alt="Crops">Crop Management
+        </a>
+        <a href="../feed_inventory.php">
+            <img src="../assets/feed_inventory.png" alt="Feed Inventory">Feed Inventory
+        </a>
+        <a href="../task_manager.php">
+            <img src="../assets/task.png" alt="Task Manager">Task Manager
+        </a>
+        <?php if ($_SESSION['role'] === 'Admin'): ?>
+            <a href="../admin_panel.php">
+                <img src="../assets/farmer.png" alt="Admin Panel">Admin Panel
+            </a>
+        <?php endif; ?>
+        <a href="../dashboard/logout.php" class="logout-btn">
+            <img src="../assets/logout.png" alt="Logout">Logout
+        </a>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <h2>Category Registration</h2>
+
+            <!-- Box container for the form -->
+            <div class="form-container">
+                <form method="POST" action="">
+                    <div class="form-group">
+                        <label for="category">Category:</label>
+                        <input type="text" id="category" name="category" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="code">Code:</label>
+                        <input type="text" id="code" name="code" required>
+                    </div>
+                    <button type="submit" name="add_category">Save</button>
+                </form>
+            </div>
+
+            <h3>Registered Categories</h3>
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Category</th>
+                    <th>Category Code</th>
+                    <th>Posting Date</th>
+                    <th>Action</th>
+                </tr>
+                <?php if (!empty($categoryData)): ?>
+                    <?php foreach ($categoryData as $index => $category): ?>
+                        <tr>
+                            <td><?php echo $index + 1; ?></td>
+                            <td><?php echo htmlspecialchars($category['category_name']); ?></td>
+                            <td><?php echo htmlspecialchars($category['category_code']); ?></td>
+                            <td><?php echo htmlspecialchars($category['created_at']); ?></td>
+                            <td>
+                                <a href="view_category.php?id=<?php echo $category['id']; ?>">View</a>
+                                <a href="update_category.php?id=<?php echo $category['id']; ?>">Update</a>
+                                <a href="?delete_id=<?php echo $category['id']; ?>">Delete</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="5">No categories found</td>
+                    </tr>
+                <?php endif; ?>
+            </table>
+        </div>
+    </div>
 </body>
 </html>
