@@ -34,8 +34,9 @@ if (isset($_GET['delete_id'])) {
     exit();
 }
 
-// Fetch all category data
-$categoryData = $livestockManager->getAllCategories();
+// Fetch all category data with optional search
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+$categoryData = $livestockManager->getAllCategories($searchTerm);
 ?>
 
 <!DOCTYPE html>
@@ -44,8 +45,8 @@ $categoryData = $livestockManager->getAllCategories();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Category Registration</title>
-    <link rel="stylesheet" href="../Design/dashboard.css">
-    <link rel="stylesheet" href="../Design/livestock.css"> <!-- Include the updated livestock.css -->
+    <link rel="stylesheet" href="../Design/livestock.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="sidebar">
@@ -81,8 +82,7 @@ $categoryData = $livestockManager->getAllCategories();
     <div class="main-content">
         <div class="container">
             <h2>Category Registration</h2>
-
-            <!-- Box container for the form -->
+            
             <div class="form-container">
                 <form method="POST" action="">
                     <div class="form-group">
@@ -98,6 +98,13 @@ $categoryData = $livestockManager->getAllCategories();
             </div>
 
             <h3>Registered Categories</h3>
+
+            <div class="search-container">
+            <form method="GET" action="">
+                <input type="text" name="search" placeholder="Search categories" value="<?php echo htmlspecialchars($searchTerm); ?>">
+                <button type="submit" title="Search"><i class="fas fa-search"></i> Search</button>
+            </form>
+
             <table>
                 <tr>
                     <th>No</th>
@@ -114,19 +121,27 @@ $categoryData = $livestockManager->getAllCategories();
                             <td><?php echo htmlspecialchars($category['category_code']); ?></td>
                             <td><?php echo htmlspecialchars($category['created_at']); ?></td>
                             <td>
-                                <a href="view_category.php?id=<?php echo $category['id']; ?>">View</a>
-                                <a href="update_category.php?id=<?php echo $category['id']; ?>">Update</a>
-                                <a href="?delete_id=<?php echo $category['id']; ?>">Delete</a>
+                                <a href="view_category.php?id=<?php echo $category['id']; ?>" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="update_category.php?id=<?php echo $category['id']; ?>" title="Update">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="?delete_id=<?php echo $category['id']; ?>" title="Delete" onclick="return confirm('Are you sure you want to delete this category?');">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="5">No categories found</td>
+                        <td colspan="5">No categories found.</td>
                     </tr>
                 <?php endif; ?>
             </table>
         </div>
     </div>
+
+    <!-- Other content -->
 </body>
 </html>

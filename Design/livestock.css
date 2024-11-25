@@ -149,7 +149,7 @@ header h2 {
 .stats-box p {
     font-size: 24px;
     font-weight: bold;
-    color: #333;
+    color: #0c0c0c;
     margin: 0; /* Remove margin for better alignment */
 }
 
@@ -173,7 +173,7 @@ header h2 {
 
 /* Styles for the category registration container */
 .container {
-    max-width: 800px;
+    max-width: 100%;
     margin: 20px auto; /* Center the container */
     padding: 20px;
     background-color: #fff;
@@ -196,6 +196,7 @@ h2 {
 
 .form-group {
     margin-bottom: 15px;
+    color: #1a1a1a;
 }
 
 label {
@@ -207,7 +208,7 @@ label {
 input[type="text"] {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #0c0c0c;
     border-radius: 4px;
 }
 
@@ -238,7 +239,7 @@ th, td {
 
 th {
     background-color: #4CAF50;
-    color: white;
+    color: #ffffff;
 }
 
 tr:nth-child(even) {
@@ -247,5 +248,13 @@ tr:nth-child(even) {
 
 tr:hover {
     background-color: #ddd;
+}
+
+th h2, h3{
+    color: #1a1a1a; /* Darker color for headings */
+}
+
+td {
+    color: #1a1a1a; /* Darker color for table data cells */
 }
 
