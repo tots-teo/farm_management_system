@@ -10,10 +10,17 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
 // Check user role for access control
 $role = $_SESSION['role'];
 
-// Placeholder values for statistics (replace with actual database queries)
-$numberOfLivestock = 150; // Example value
-$numberOfAdmins = 3;      // Example value
-$numberOfTasks = 5;       // Example value
+// Include the dashboard functions file for statistics
+include '../dashboard/dashboardfunction.php';
+include '../db.php'; // Include the database connection
+
+// Create an instance of DashboardStats
+$dashboardStats = new DashboardStats($conn);
+$stats = $dashboardStats->updateStats();
+
+// Fetch statistics
+$numberOfAdmins = 1;
+$numberOfTasks = 2; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,11 +69,11 @@ $numberOfTasks = 5;       // Example value
         <div class="dashboard-overview">
             <div class="stats-box map-overview">
                 <h4>Map Overview</h4>
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31796.48949152984!2d121.3342235!3d13.8519373!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd3fb3fc0493bf%3A0xb4f54891ed0ce491!2sMJCK%20FARM!5e0!3m2!1sen!2sus!4v1632958945280!5m2!1sen!2sus" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                <iframe src="https://shorturl.at/WMx3v" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
             </div>
             <div class="stats-box">
                 <h4>Number of Livestock</h4>
-                <p><?php echo $numberOfLivestock; ?></p>
+                <p><?php echo $dashboardStats->updateStats(); ?></p>
             </div>
             <div class="stats-box">
                 <h4>Number of Admins</h4>

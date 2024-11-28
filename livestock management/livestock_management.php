@@ -7,24 +7,64 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
     exit();
 }
 
-// Include the livestock management file and database connection
+// Include the livestock management file, database connection, and error handling class
 include 'livestock.php';
 include '../db.php';
 
 // Create an instance of Livestock
 $livestockManager = new Livestock($conn);
 
+
 // Handle form submission for adding category
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add_category'])) {
+
         $category = $_POST['category'];
         $code = $_POST['code'];
 
+        switch ($category) {
+            case 'Pig':
+                $code = 'PG';
+                break;
+            case 'Cow':
+                $code = 'CW';
+                break;
+            case 'Chicken':
+                $code = 'CH';
+                break;
+            case 'Goat':
+                $code = 'GT';
+                break;
+        }       
         // Add category to the database
         $livestockManager->addCategory($category, $code);
-        header("Location: livestock_management.php"); // Redirect to avoid resubmission
-        exit();
+    
+
+            $fileName = $_FILES['image']['name']; 
+            $tempName = $_FILES['image']['tmp_name'];
+        
+            $uniqueFileName = uniqid() . '_' . $fileName; //baka kasi may magkapareha na pangalan ng picture
+            $folder = '../assets/adminPicture/'.$uniqueFileName;
+        
+            $path = '../assets/adminPicture/'; //kasi gagamitin to sa ibang folder sa labas
+            $storePath = $path . $uniqueFileName;
+        
+            $stmt = $conn->prepare("UPDATE categories SET set_picture = ?");
+            $stmt->bind_param('s', $storePath);
+            $stmt->execute();
+
+            echo "File uploaded successfully.";
+
+            if (move_uploaded_file($tempName, $folder)) {
+                echo "File uploaded successfully.";
+            } else {
+                echo "File upload failed.";
+            }
+            
+            header("Location: livestock_management.php"); // Redirect to avoid resubmission
+            exit();
     }
+        
 }
 
 // Handle deletion of category
@@ -84,16 +124,20 @@ $categoryData = $livestockManager->getAllCategories($searchTerm);
             <h2>Category Registration</h2>
             
             <div class="form-container">
-                <form method="POST" action="">
+                <form method="POST" action="livestock_management.php" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="category">Category:</label>
-                        <input type="text" id="category" name="category" required>
+                        <select id="category" name="category" required>
+                            <option value="" disabled selected>Select an animal</option>
+                            <option value="Pig">Pig</option>
+                            <option value="Cow">Cow</option>
+                            <option value="Chicken">Chicken</option>
+                            <option value="Goat">Goat</option>
+                        </select>
                     </div>
-                    <div class="form-group">
-                        <label for="code">Code:</label>
-                        <input type="text" id="code" name="code" required>
-                    </div>
+                    <input type="file" name="image" required>
                     <button type="submit" name="add_category">Save</button>
+                    <img src="<?php echo $livestockManager->viewPicture($id)?>">
                 </form>
             </div>
 
@@ -118,7 +162,7 @@ $categoryData = $livestockManager->getAllCategories($searchTerm);
                         <tr>
                             <td><?php echo $index + 1; ?></td>
                             <td><?php echo htmlspecialchars($category['category_name']); ?></td>
-                            <td><?php echo htmlspecialchars($category['category_code']); ?></td>
+                            <td><?php echo htmlspecialchars($category['category_code']) . ($category['id']);?></td>
                             <td><?php echo htmlspecialchars($category['created_at']); ?></td>
                             <td>
                                 <a href="view_category.php?id=<?php echo $category['id']; ?>" title="View">

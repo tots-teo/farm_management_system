@@ -5,9 +5,17 @@ class Livestock {
     public function __construct($dbConnection) {
         $this->conn = $dbConnection;
     }
+    public function viewPicture($id) {
+        $stmt = $this->conn->prepare("SELECT set_picture FROM categories WHERE id = ?");
+        $stmt->bind_param('i', $id);
+        $stmt->execute(); 
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['set_picture'];
+    }
 
     public function addCategory($categoryName, $categoryCode) {
-        $stmt = $this->conn->prepare("INSERT INTO categories (category_name, category_code, created_at) VALUES (?, ?, NOW())");
+        $stmt = $this->conn->prepare("INSERT INTO categories (category_name, category_code) VALUES (?, ?)");
         $stmt->bind_param("ss", $categoryName, $categoryCode);
         $stmt->execute();
     }
