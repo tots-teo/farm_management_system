@@ -10,15 +10,15 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
 // Include the livestock management file, database connection, and error handling class
 include 'livestock.php';
 include '../db.php';
+include '../classes/CategoryManager.php';
 
 // Create an instance of Livestock
 $livestockManager = new Livestock($conn);
-
+$categoryManager = new CategoryManager($conn);
 
 // Handle form submission for adding category
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add_category'])) {
-
         $category = $_POST['category'];
         $code = $_POST['code'];
 
@@ -39,33 +39,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Add category to the database
         $livestockManager->addCategory($category, $code);
     
+        $fileName = $_FILES['image']['name']; 
+        $tempName = $_FILES['image']['tmp_name'];
+        
+        $uniqueFileName = uniqid() . '_' . $fileName; 
+        $folder = '../assets/adminPicture/'.$uniqueFileName;
+        
+        $path = '../assets/adminPicture/'; 
+        $storePath = $path . $uniqueFileName;
+        
+        $stmt = $conn->prepare("UPDATE categories SET set_picture = ?");
+        $stmt->bind_param('s', $storePath);
+        $stmt->execute();
 
-            $fileName = $_FILES['image']['name']; 
-            $tempName = $_FILES['image']['tmp_name'];
-        
-            $uniqueFileName = uniqid() . '_' . $fileName; //baka kasi may magkapareha na pangalan ng picture
-            $folder = '../assets/adminPicture/'.$uniqueFileName;
-        
-            $path = '../assets/adminPicture/'; //kasi gagamitin to sa ibang folder sa labas
-            $storePath = $path . $uniqueFileName;
-        
-            $stmt = $conn->prepare("UPDATE categories SET set_picture = ?");
-            $stmt->bind_param('s', $storePath);
-            $stmt->execute();
-
+        if (move_uploaded_file($tempName, $folder)) {
             echo "File uploaded successfully.";
-
-            if (move_uploaded_file($tempName, $folder)) {
-                echo "File uploaded successfully.";
-            } else {
-                echo "File upload failed.";
-            }
-            
-            header("Location: livestock_management.php"); // Redirect to avoid resubmission
-            exit();
-    }
+        } else {
+            echo "File upload failed.";
+        }
         
+        header("Location: livestock_management.php"); // Redirect to avoid resubmission
+        exit();
+    }
 }
+
+// Handle updating category
+if (isset($_POST['update_category'])) {
+    $id = $_POST['id'];
+    $categoryName = $_POST['category_name'];
+    $categoryCode = $_POST['category_code'];
+    $categoryManager->updateCategory($id, $categoryName, $categoryCode);
+    header("Location: livestock_management.php"); // Redirect after updating
+    exit();
+}
+
 
 // Handle deletion of category
 if (isset($_GET['delete_id'])) {
@@ -77,6 +84,12 @@ if (isset($_GET['delete_id'])) {
 // Fetch all category data with optional search
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
 $categoryData = $livestockManager->getAllCategories($searchTerm);
+
+// Fetch category data for modal if view_id is set
+$modalCategory = null;
+if (isset($_GET['view_id'])) {
+    $modalCategory = $categoryManager->getCategoryById($_GET['view_id']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -137,17 +150,17 @@ $categoryData = $livestockManager->getAllCategories($searchTerm);
                     </div>
                     <input type="file" name="image" required>
                     <button type="submit" name="add_category">Save</button>
-                    <img src="<?php echo $livestockManager->viewPicture($id)?>">
                 </form>
             </div>
 
             <h3>Registered Categories</h3>
 
             <div class="search-container">
-            <form method="GET" action="">
-                <input type="text" name="search" placeholder="Search categories" value="<?php echo htmlspecialchars($searchTerm); ?>">
-                <button type="submit" title="Search"><i class="fas fa-search"></i> Search</button>
-            </form>
+                <form method="GET" action="">
+                    <input type="text" name="search" placeholder="Search categories" value="<?php echo htmlspecialchars($searchTerm); ?>">
+                    <button type="submit" title="Search"><i class="fas fa-search"></i> Search</button>
+                </form>
+            </div>
 
             <table>
                 <tr>
@@ -162,13 +175,13 @@ $categoryData = $livestockManager->getAllCategories($searchTerm);
                         <tr>
                             <td><?php echo $index + 1; ?></td>
                             <td><?php echo htmlspecialchars($category['category_name']); ?></td>
-                            <td><?php echo htmlspecialchars($category['category_code']) . ($category['id']);?></td>
+                            <td><?php echo htmlspecialchars($category['category_code']) . ($category['id']); ?></td>
                             <td><?php echo htmlspecialchars($category['created_at']); ?></td>
                             <td>
-                                <a href="view_category.php?id=<?php echo $category['id']; ?>" title="View">
+                                <a href="livestock_management.php?view_id=<?php echo $category['id']; ?>" class="open-modal" title="View">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="update_category.php?id=<?php echo $category['id']; ?>" title="Update">
+                                <a href="livestock_management.php?id=<?php echo $category['id']; ?>" class="open-modal" title="Update">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <a href="?delete_id=<?php echo $category['id']; ?>" title="Delete" onclick="return confirm('Are you sure you want to delete this category?');">
@@ -186,6 +199,42 @@ $categoryData = $livestockManager->getAllCategories($searchTerm);
         </div>
     </div>
 
-    <!-- Other content -->
+    <div id="modal" class="modal" style="display: <?php echo isset($_GET['view_id']) ? 'block' : 'none'; ?>;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="window.location.href='livestock_management.php'">&times;</span>
+            <div id="modal-body">
+                <?php if ($modalCategory): ?>
+                    <img src="<?php echo htmlspecialchars($modalCategory['set_picture']); ?>" alt="Category Image" style="width: 100%; height: auto;">
+                    <h3><?php echo htmlspecialchars($modalCategory['category_name']); ?></h3>
+                    <p>Category Code: <?php echo htmlspecialchars($modalCategory['category_code']); ?></p>
+                <?php else: ?>
+                    <p>Category not found.</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+    <div id="updateModal" class="modal" style="display: <?php echo isset($_GET['update_id']) ? 'block' : 'none'; ?>;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="window.location.href='livestock_management.php'">&times;</span>
+            <div id="modal-body">
+                <?php if ($modalCategory): ?>
+                    <h3>Update Category</h3>
+                    <form method="POST" action="livestock_management.php">
+                        <input type="hidden" name="id" value="<?php echo $modalCategory['id']; ?>">
+                        <label for="category_name">Category Name:</label>
+                        <input type="text" id="category_name" name="category_name" value="<?php echo htmlspecialchars($modalCategory['category_name']); ?>" required>
+                        
+                        <label for="category_code">Category Code:</label>
+                        <input type="text" id="category_code" name="category_code" value="<?php echo htmlspecialchars($modalCategory['category_code']); ?>" required>
+                        
+                        <button type="submit" name="update_category">Update Category</button>
+                    </form>
+                <?php else: ?>
+                    <p>Category not found.</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
