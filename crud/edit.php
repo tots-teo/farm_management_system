@@ -1,12 +1,12 @@
 <?php
 // Include database connection
-include 'db.php';
+include '../db.php';
 
 // If there's an ID in the URL, we are editing an existing task
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
     // Fetch the current task data for editing
-    $sql = "SELECT * FROM tasks WHERE id = $id";
+    $sql = "SELECT * FROM task WHERE id = $id";
     $result = $conn->query($sql);
     $task = $result->fetch_assoc();
 }
@@ -20,13 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // If ID is set, we are updating an existing task
     if (isset($id)) {
-        $sql = "UPDATE tasks SET task_name = ?, status = ?, due_date = ? WHERE id = ?";
+        $sql = "UPDATE task SET task_name = ?, status = ?, due_date = ? WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("sssi", $task_name, $status, $due_date, $id);
         $stmt->execute();
     } else {
         // Otherwise, we are creating a new task
-        $sql = "INSERT INTO tasks (task_name, status, due_date) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO task (task_name, status, due_date) VALUES (?, ?, ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("sss", $task_name, $status, $due_date);
         $stmt->execute();

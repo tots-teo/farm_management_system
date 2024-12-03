@@ -1,11 +1,14 @@
 <?php
-    include "db.php";
+    include "../db.php";
 
     if(isset($_GET['id'])){
-        $id = $_get['id'];
-        $sql = "DELETE FROM 'farm_management' where id=$id";
-        $conn->query($sql);
-    }
-    header('location:/tasks/index.php');
+        $id = $_GET['id'];
+
+    $stmt = $conn->prepare("DELETE FROM `task` WHERE id = ?");
+    $stmt->bind_param("i", $id); // "i" specifies the type (integer)
+    $stmt->execute();
+    $stmt->close();
+}
+    header('location:../crud/index.php');
     exit;
 ?>

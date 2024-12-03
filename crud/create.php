@@ -1,7 +1,7 @@
 <?php
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           // Include database connection
-          include 'db.php';
+          include '../db.php';
 
           // Get values from the form
           $task_name = $_POST['task_name'];
@@ -9,7 +9,7 @@
           $due_date = $_POST['due_date'];
 
           // Insert the data into the database
-          $sql = "INSERT INTO tasks (task_name, status, due_date) VALUES (?, ?, ?)";
+          $sql = "INSERT INTO task (task_name, status, due_date) VALUES (?, ?, ?)";
           $stmt = $conn->prepare($sql);
           $stmt->bind_param("sss", $task_name, $status, $due_date);
           $stmt->execute();
