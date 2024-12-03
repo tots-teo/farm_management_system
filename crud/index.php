@@ -39,7 +39,7 @@
         </thead>
         <tbody>
           <?php
-            include "db.php"; 
+            include 'db.php'; 
             $sql = "SELECT * FROM tasks";
             $result = $conn->query($sql);
 

@@ -48,7 +48,7 @@ $numberOfTasks = 2;
         <a href="feed_inventory.php">
             <img src="../assets/feed_inventory.png" alt="Feed Inventory">Feed Inventory
         </a>
-        <a href="task_manager.php">
+        <a href="../crud/index.php">
             <img src="../assets/task.png" alt="Task Manager">Task Manager
         </a>
         <?php if ($role === 'Admin'): ?>

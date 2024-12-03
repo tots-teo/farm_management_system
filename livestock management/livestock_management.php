@@ -181,7 +181,7 @@ if (isset($_GET['view_id'])) {
                                 <a href="livestock_management.php?view_id=<?php echo $category['id']; ?>" class="open-modal" title="View">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="livestock_management.php?id=<?php echo $category['id']; ?>" class="open-modal" title="Update">
+                                <a href="update_category.php?id=<?php echo $category['id']; ?>" class="open-modal" title="Update">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <a href="?delete_id=<?php echo $category['id']; ?>" title="Delete" onclick="return confirm('Are you sure you want to delete this category?');">
@@ -215,26 +215,30 @@ if (isset($_GET['view_id'])) {
     </div>
 
     <div id="updateModal" class="modal" style="display: <?php echo isset($_GET['update_id']) ? 'block' : 'none'; ?>;">
-        <div class="modal-content">
-            <span class="close-btn" onclick="window.location.href='livestock_management.php'">&times;</span>
-            <div id="modal-body">
-                <?php if ($modalCategory): ?>
-                    <h3>Update Category</h3>
-                    <form method="POST" action="livestock_management.php">
-                        <input type="hidden" name="id" value="<?php echo $modalCategory['id']; ?>">
-                        <label for="category_name">Category Name:</label>
-                        <input type="text" id="category_name" name="category_name" value="<?php echo htmlspecialchars($modalCategory['category_name']); ?>" required>
-                        
-                        <label for="category_code">Category Code:</label>
-                        <input type="text" id="category_code" name="category_code" value="<?php echo htmlspecialchars($modalCategory['category_code']); ?>" required>
-                        
-                        <button type="submit" name="update_category">Update Category</button>
-                    </form>
-                <?php else: ?>
-                    <p>Category not found.</p>
-                <?php endif; ?>
-            </div>
+    <div class="modal-content">
+        <span class="close-btn" onclick="window.location.href='livestock_management.php'">&times;</span>
+        <div id="modal-body">
+            <?php if ($modalCategory): ?>
+                <h3>Update Category</h3>
+                <form method="POST" action="livestock_management.php" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="<?php echo $modalCategory['id']; ?>">
+                    <label for="category_name">Category Name:</label>
+                    <input type="text" id="category_name" name="category_name" value="<?php echo htmlspecialchars($modalCategory['category_name']); ?>" required>
+                    
+                    <label for="category_code">Category Code:</label>
+                    <input type="text" id="category_code" name="category_code" value="<?php echo htmlspecialchars($modalCategory['category_code']); ?>" required>
+
+                    <label for="image">Upload Image:</label>
+                    <input type="file" name="image" required>
+
+                    <button type="submit" name="update_category">Update Category</button>
+                </form>
+            <?php else: ?>
+                <p>Category not found.</p>
+            <?php endif; ?>
         </div>
     </div>
+</div>
+
 </body>
 </html>

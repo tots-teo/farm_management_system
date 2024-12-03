@@ -1,3 +1,27 @@
+<?php
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+          // Include database connection
+          include 'db.php';
+
+          // Get values from the form
+          $task_name = $_POST['task_name'];
+          $status = $_POST['status'];
+          $due_date = $_POST['due_date'];
+
+          // Insert the data into the database
+          $sql = "INSERT INTO tasks (task_name, status, due_date) VALUES (?, ?, ?)";
+          $stmt = $conn->prepare($sql);
+          $stmt->bind_param("sss", $task_name, $status, $due_date);
+          $stmt->execute();
+
+          // Redirect to index.php after inserting the data
+          header('Location: index.php');
+          exit;
+        }
+      ?>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    
 <!doctype html>
 <html lang="en">
   <head>
@@ -44,29 +68,5 @@
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
 
-      <?php
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-          // Include database connection
-          include 'db.php';
-
-          // Get values from the form
-          $task_name = $_POST['task_name'];
-          $status = $_POST['status'];
-          $due_date = $_POST['due_date'];
-
-          // Insert the data into the database
-          $sql = "INSERT INTO tasks (task_name, status, due_date) VALUES (?, ?, ?)";
-          $stmt = $conn->prepare($sql);
-          $stmt->bind_param("sss", $task_name, $status, $due_date);
-          $stmt->execute();
-
-          // Redirect to index.php after inserting the data
-          header('Location: index.php');
-          exit;
-        }
-      ?>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   </body>
 </html>
