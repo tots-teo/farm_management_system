@@ -1,31 +1,72 @@
 <?php
 session_start();
-include '../db.php'; // Include the database connection
-include '../classes/CategoryManager.php'; // Include the CategoryManager class
 
+// Check if user is logged in
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
+    header("Location: login_page/login.php");
+    exit();
+}
+
+// Initialize the role variable from the session
+$role = $_SESSION['role'];
+
+// Include necessary files
+include '../db.php';
+include '../classes/CategoryManager.php';
+include '../Sidebar/sidebar.php';
+
+// Create instances
 $categoryManager = new CategoryManager($conn);
+$sidebar = new Sidebar($role);
 
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $category = $categoryManager->viewCategory($id);
+// Fetch category details for the update form
+$categoryId = $_GET['id'] ?? null;
 
-    if (!$category) {
-        echo "Category not found.";
-        exit;
-    }
+if ($categoryId) {
+    $stmt = $conn->prepare("SELECT * FROM categories WHERE id = ?");
+    $stmt->bind_param('i', $categoryId);
+    $stmt->execute();
+    $category = $stmt->get_result()->fetch_assoc();
+}
 
-    // Handle form submission for updating the category
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $categoryName = $_POST['category_name'];
-        $categoryCode = $_POST['category_code'];
-        $categoryManager->updateCategory($id, $categoryName, $categoryCode);
-        header("Location: livestock_management.php"); // Redirect after updating
+// Handle form submission for updating category
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['update_category'])) {
+        $categoryName = $_POST['category'];
+        $categoryCode = $_POST['code'];
+
+        // Update category information in the database
+        $stmt = $conn->prepare("UPDATE categories SET category_name = ?, category_code = ? WHERE id = ?");
+        $stmt->bind_param('ssi', $categoryName, $categoryCode, $categoryId);
+        $stmt->execute();
+
+        // Handle file upload if a new image is uploaded
+        if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+            $fileName = $_FILES['image']['name'];
+            $tempName = $_FILES['image']['tmp_name'];
+            $uniqueFileName = uniqid() . '_' . $fileName;
+            $folder = '../assets/adminPicture/' . $uniqueFileName;
+
+            // Update category picture in the database
+            $stmt = $conn->prepare("UPDATE categories SET set_picture = ? WHERE id = ?");
+            $stmt->bind_param('si', $folder, $categoryId);
+            $stmt->execute();
+
+            // Move uploaded file to the specified folder
+            if (move_uploaded_file($tempName, $folder)) {
+                echo "File uploaded successfully.";
+            } else {
+                echo "File upload failed.";
+            }
+        }
+
+        // Redirect after updating
+        header("Location: livestock_management.php");
         exit();
     }
-} else {
-    echo "Invalid request.";
-    exit;
 }
+
+$sidebar->render();
 ?>
 
 <!DOCTYPE html>
@@ -37,20 +78,38 @@ if (isset($_GET['id'])) {
     <link rel="stylesheet" href="../Design/livestock.css">
 </head>
 <body>
+
+<div class="main-content">
     <div class="container">
         <h2>Update Category</h2>
-        <form method="POST" action="">
-            <div class="form-group">
-                <label for="category_name">Category Name:</label>
-                <input type="text" id="category_name" name="category_name" value="<?php echo htmlspecialchars($category['category_name']); ?>" required>
-            </div>
-            <div class="form -group">
-                <label for="category_code">Category Code:</label>
-                <input type="text" id="category_code" name="category_code" value="<?php echo htmlspecialchars($category['category_code']); ?>" required>
-            </div>
-            <button type="submit">Update Category</button>
-        </form>
-        <a href="livestock_management.php">Cancel</a>
+
+        <!-- Update Category Form -->
+        <div class="form-container">
+            <form method="POST" action="update_category.php?id=<?php echo $categoryId; ?>" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="category">Category Name:</label>
+                    <input type="text" id="category" name="category" value="<?php echo htmlspecialchars($category['category_name']); ?>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="code">Category Code:</label>
+                    <input type="text" id="code" name="code" value="<?php echo htmlspecialchars($category['category_code']); ?>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Upload New Image (Optional):</label>
+                    <input type="file" name="image">
+                    <?php if ($category['set_picture']): ?>
+                        <p>Current Image:</p>
+                        <img src="<?php echo htmlspecialchars($category['set_picture']); ?>" alt="Category Image" style="width: 100px; height: auto;">
+                    <?php endif; ?>
+                </div>
+
+                <button type="submit" name="update_category">Update</button>
+            </form>
+        </div>
     </div>
+</div>
+
 </body>
 </html>
