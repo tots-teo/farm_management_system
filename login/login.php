@@ -2,6 +2,7 @@
 require_once '../db.php';
 require_once '../classes/user.php';
 require_once '../classes/sessionManager.php';
+require_once '../classes/Database.php';
 
 // Create a single instance of SessionManager which will handle session start
 $sessionManager = new SessionManager();
@@ -9,33 +10,6 @@ $sessionManager = new SessionManager();
 // Initialize variables to avoid undefined variable warnings
 $registration_success = null; // Initialize to null
 $error_message = null; // Initialize to null
-
-class Database {
-    private $servername;
-    private $username;
-    private $password;
-    private $dbname;
-    private $conn;
-
-    public function __construct($servername, $username, $password, $dbname) {
-        $this->servername = $servername;
-        $this->username = $username;
-        $this->password = $password;
-        $this->dbname = $dbname;
-        $this->connect();
-    }
-
-    private function connect() {
-        $this->conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
-        if ($this->conn->connect_error) {
-            die("Connection failed: " . $this->conn->connect_error);
-        }
-    }
-
-    public function getConnection() {
-        return $this->conn;
-    }
-}
 
 $database = new Database('localhost:3307', 'root', '', 'farm_management');
 $conn = $database->getConnection();
