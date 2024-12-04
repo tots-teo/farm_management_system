@@ -14,5 +14,12 @@ class DashboardStats {
         return $categories;
         }
 
+        // New method to get the number of tasks
+    public function getNumberOfTasks() {
+        $stmt = "SELECT COUNT(*) AS count FROM task"; // Replace 'task' with your actual table name
+        $result = $this->db->query($stmt);
+        $row = $result->fetch_assoc();
+        return $row['count'];
+    }
 }
 ?>
