@@ -149,8 +149,8 @@ $sidebar->render();
         <h3>Registered Categories</h3>
         <div class="search-container">
             <form method="GET" action="">
-                <input type="text" name="search" placeholder="Search categories" value="<?php echo htmlspecialchars($searchTerm);?>">
-                <button type="submit" title="Search"><i class="fas fa-search"></i> Search</button>
+                <input type="text" name="search" class="search-input" placeholder="Search categories" value="<?php echo htmlspecialchars($searchTerm); ?>">
+                <button type="submit" class="search-button"><i class="fas fa-search"></i> Search</button>
             </form>
         </div>
 
