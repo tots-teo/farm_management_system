@@ -34,10 +34,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update_category'])) {
         $categoryName = $_POST['category'];
         $categoryCode = $_POST['code'];
+        $sex = $_POST['sex'];
+        $age = $_POST['age'];
+        $weight = $_POST['weight'];
 
         // Update category information in the database
-        $stmt = $conn->prepare("UPDATE categories SET category_name = ?, category_code = ? WHERE id = ?");
-        $stmt->bind_param('ssi', $categoryName, $categoryCode, $categoryId);
+        $stmt = $conn->prepare("UPDATE categories SET category_name = ?, category_code = ?, sex = ?, age = ?, weight = ? WHERE id = ?");
+        $stmt->bind_param('sssiid', $categoryName, $categoryCode, $sex, $age, $weight, $categoryId);
         $stmt->execute();
 
         // Handle file upload if a new image is uploaded
@@ -45,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fileName = $_FILES['image']['name'];
             $tempName = $_FILES['image']['tmp_name'];
             $uniqueFileName = uniqid() . '_' . $fileName;
-            $folder = '../assets/adminPicture/' . $uniqueFileName;
+            $folder = '../Upload Images/' . $uniqueFileName;
 
             // Update category picture in the database
             $stmt = $conn->prepare("UPDATE categories SET set_picture = ? WHERE id = ?");
@@ -75,7 +78,7 @@ $sidebar->render();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Category</title>
-    <link rel="stylesheet" href="../Design/livestock.css">
+    <link rel="stylesheet" href="../Design/viewUpdatelivestock.css">
 </head>
 <body>
 
@@ -94,6 +97,24 @@ $sidebar->render();
                 <div class="form-group">
                     <label for="code">Category Code:</label>
                     <input type="text" id="code" name="code" value="<?php echo htmlspecialchars($category['category_code']); ?>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="sex">Sex:</label>
+                    <select id="sex" name="sex" required>
+                        <option value="Male" <?php echo ($category['sex'] == 'Male') ? 'selected' : ''; ?>>Male</option>
+                        <option value="Female" <?php echo ($category['sex'] == 'Female') ? 'selected' : ''; ?>>Female</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" value="<?php echo htmlspecialchars($category['age']); ?>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="weight">Weight (kg):</label>
+                    <input type="number" id=" weight" name="weight" value="<?php echo htmlspecialchars($category['weight']); ?>" required>
                 </div>
 
                 <div class="form-group">

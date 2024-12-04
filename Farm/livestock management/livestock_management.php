@@ -34,19 +34,22 @@ $errorMessage = '';
 // Handle form submission for adding category
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add_category'])) {
-        $category = $_POST['category'];
-        $code = $_POST['code'];
+        $category = $_POST['category'] ?? '';
+        $code = $_POST['code'] ?? '';
+        $sex = $_POST['sex'] ?? '';
+        $age = $_POST['age'] ?? 0;
+        $weight = $_POST['weight'] ?? 0.0;
 
         // Validate category code
         if ($validCodes[$category] !== $code) {
-            $errorMessage = "Error: The category code for '$category' must be '{$validCodes[$category]}'.";
+            $errorMessage = "Error: The category code for '$category' must be '{$validCodes[$category]}'";
         } else {
-            // Add category to the database
-            $livestockManager->addCategory($category, $code);
-
-            // Redirect after successful submission
-            header("Location: livestock_management.php");
-            exit();
+            // Add category to the database with additional fields
+            if ($categoryManager->addCategory($category, $code, $sex, $age, $weight)) {
+                // Redirect after successful submission
+                header("Location: livestock_management.php");
+                exit();
+            } 
         }
     }
 }
@@ -71,7 +74,7 @@ if (isset($_GET['delete_id'])) {
 }
 
 // Fetch category data with search feature
-$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+$searchTerm = $_GET['search'] ?? '';
 $categoryData = $livestockManager->getAllCategories($searchTerm);
 
 $sidebar->render();
@@ -111,6 +114,26 @@ $sidebar->render();
                     <input type="text" id="code" name="code" required>
                 </div>
 
+                <!-- New fields: Sex, Age, and Weight -->
+                <div class="form-group">
+                    <label for="sex">Sex:</label>
+                    <select id="sex" name="sex" required>
+                        <option value="" disabled selected>Select sex</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="age">Age (Months):</label>
+                    <input type="number" id="age" name="age" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="weight">Weight (kg):</label>
+                    <input type="number" id="weight" name="weight" min="0" step="0.1" required>
+                </div>
+
                 <!-- Display error message if any -->
                 <?php if ($errorMessage): ?>
                     <div class="error-message">
@@ -126,7 +149,7 @@ $sidebar->render();
         <h3>Registered Categories</h3>
         <div class="search-container">
             <form method="GET" action="">
-                <input type="text" name="search" placeholder="Search categories" value="<?php echo htmlspecialchars($searchTerm); ?>">
+                <input type="text" name="search" placeholder="Search categories" value="<?php echo htmlspecialchars($searchTerm);?>">
                 <button type="submit" title="Search"><i class="fas fa-search"></i> Search</button>
             </form>
         </div>
@@ -136,6 +159,9 @@ $sidebar->render();
                 <th>No</th>
                 <th>Category</th>
                 <th>Category Code</th>
+                <th>Sex</th>
+                <th>Age</th>
+                <th>Weight</th>
                 <th>Posting Date</th>
                 <th>Action</th>
             </tr>
@@ -145,6 +171,9 @@ $sidebar->render();
                         <td><?php echo $index + 1; ?></td>
                         <td><?php echo htmlspecialchars($category['category_name']); ?></td>
                         <td><?php echo htmlspecialchars($category['category_code']); ?></td>
+                        <td><?php echo htmlspecialchars($category['sex']); ?></td>
+                        <td><?php echo htmlspecialchars($category['age']); ?></td>
+                        <td><?php echo htmlspecialchars($category['weight']); ?></td>
                         <td><?php echo htmlspecialchars($category['created_at']); ?></td>
                         <td>
                             <a href="view_category.php?id=<?php echo $category['id']; ?>" title="View">
@@ -161,7 +190,7 @@ $sidebar->render();
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="5">No categories found.</td>
+                    <td colspan="8">No categories found.</td>
                 </tr>
             <?php endif; ?>
         </table>

@@ -6,7 +6,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-image: url('farm-background.jpg'); 
+    background-image: url('../Farm/Pictures/farm-background.jpg'); 
     background-size: cover;
     background-position: center;
     height: 100vh;

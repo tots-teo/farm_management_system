@@ -121,56 +121,6 @@ header h2 {
     font-size: 1.8em;
 }
 
-.dashboard-overview {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 700px 1fr; /* Make the first row larger for the map overview */
-    gap: 20px;
-}
-
-.stats-box {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    border: 1px solid #e0e0e0;
-    height: 100px; /* Decrease the height of the stats boxes */
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Center content vertically */
-}
-
-.stats-box h4 {
-    color: #4CAF50;
-    margin-bottom: 10px;
-}
-
-.stats-box p {
-    font-size: 24px;
-    font-weight: bold;
-    color: #0c0c0c;
-    margin: 0; /* Remove margin for better alignment */
-}
-
-.stats-box span {
-    font-size: 14px;
-    color: #4CAF50;
-}
-
-.stats-box.map-overview {
-    grid-row: 1 / 2; /* Make the map overview span the full height of the first row */
-    height: 80%; /* Fill the available space in the first row */
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Center content vertically */
-    align-items: center; /* Center content horizontally */
-}
-
-.stats-box.map-overview h4{
-    margin-bottom: 150px; 
-}
-
 /* Styles for the category registration container */
 .container {
     max-width: 100%;
@@ -186,6 +136,10 @@ h2 {
     color: #333;
 }
 
+h3 {
+    color: black;
+}
+
 .form-container {
     margin-bottom: 20px;
     padding: 20px;
@@ -194,24 +148,35 @@ h2 {
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Layout adjustments for fields */
 .form-group {
     margin-bottom: 15px;
     color: #1a1a1a;
+    display: inline-block;
+    margin-right: 1.5em; /* Space between form groups */
+    width: 200px; /* Ensure consistent width */
+    vertical-align: top; /* Align the fields to the top */
 }
 
-label {
+/* Label styling */
+.form-group label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
 }
 
-input[type="text"] {
+/* Input and select field styling */
+input[type="text"],
+input[type="number"],
+select {
     width: 100%;
     padding: 10px;
     border: 1px solid #0c0c0c;
     border-radius: 4px;
+    font-size: 1em;
 }
 
+/* Button styling */
 button {
     background-color: #4CAF50;
     color: white;
@@ -219,12 +184,15 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    width: auto;
+    margin-left: 20px;
 }
 
 button:hover {
     background-color: #45a049;
 }
 
+/* Table Styling */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -235,6 +203,10 @@ th, td {
     padding: 10px;
     text-align: left;
     border: 1px solid #ddd;
+}
+
+td {
+    color: black;
 }
 
 th {
@@ -250,10 +222,57 @@ tr:hover {
     background-color: #ddd;
 }
 
-th h2, h3{
-    color: #1a1a1a; /* Darker color for headings */
+/* Search Container */
+.search-container {
+    display: flex;
+    justify-content: space-between; /* This aligns items to both left and right */
+    margin-bottom: 1em;
 }
 
-td {
-    color: #1a1a1a; /* Darker color for table data cells */
+.search-input {
+    flex: 1; /* Ensures the input field takes up the available space */
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px; /* Rounded edges for the input on the left */
+}
+
+.search-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 0 4px 4px 0; /* Rounded edges for the button on the right */
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #218838;
+}
+
+/* Layout for smaller screens */
+@media (max-width: 768px) {
+    .form-group {
+        display: block;
+        margin-right: 0;
+        width: 100%; /* Full-width for small screens */
+        margin-bottom: 1em;
+    }
+
+    button {
+        width: 100%; /* Full-width button */
+        margin-left: 0;
+        margin-top: 1em;
+    }
+
+    .search-container {
+        width: 100%;
+    }
+
+    .search-input {
+        width: calc(100% - 100px); /* Adjust width for small screens */
+    }
+
+    .search-button {
+        width: 100px;
+    }
 }

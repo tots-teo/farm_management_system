@@ -46,7 +46,7 @@ $sidebar->render();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Category</title>
-    <link rel="stylesheet" href="../Design/livestock.css">
+    <link rel="stylesheet" href="../Design/viewUpdatelivestock.css">
 </head>
 <body>
 
@@ -67,9 +67,24 @@ $sidebar->render();
             </div>
 
             <div class="form-group">
+                <label>Sex:</label>
+                <p><?php echo htmlspecialchars($category['sex']); ?></p>
+            </div>
+
+            <div class="form-group">
+                <label>Age:</label>
+                <p><?php echo htmlspecialchars($category['age']); ?></p>
+            </div>
+
+            <div class="form-group">
+                <label>Weight:</label>
+                <p><?php echo htmlspecialchars($category['weight']); ?> kg</p>
+            </div>
+
+            <div class="form-group">
                 <label>Category Image:</label>
                 <?php if ($category['set_picture']): ?>
-                    <img src="<?php echo htmlspecialchars($category['set_picture']); ?>" alt="Category Image" style="width: 100%; height: auto;">
+                    <img src="<?php echo htmlspecialchars($category['set_picture']); ?>" alt="Category Image" style="width: 20%; height: auto;">
                 <?php else: ?>
                     <p>No image available.</p>
                 <?php endif; ?>
