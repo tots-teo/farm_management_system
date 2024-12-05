@@ -8,6 +8,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
 }
 
 // Include necessary files
+include '../db.php';
 include '../Sidebar/sidebar.php'; // Sidebar for navigation
 include 'CropMethods.php'; // Include the CropMethods class
 
@@ -61,6 +62,7 @@ $sidebar->render();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crop Management</title>
     <link rel="stylesheet" href="../Design/crops.css"> <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
@@ -99,16 +101,30 @@ $sidebar->render();
                 <th>Quantity</th>
                 <th>Action</th>
             </tr>
-            <?php foreach ($cropsData as $crop): ?>
+            <?php if (!empty($cropsData)): ?>
+                <?php foreach ($cropsData as $index => $crop): ?>
+                    <tr>
+                        <td><?php echo $index + 1; ?></td>
+                        <td><?php echo htmlspecialchars($crop['crop_name']); ?></td>
+                        <td><?php echo htmlspecialchars($crop['quantity']); ?></td>
+                        <td>
+                            <a href="view_crop.php?id=<?php echo $crop['id']; ?>" title="View">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="update_crop.php?id=<?php echo $crop['id']; ?>" title="Update">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="?delete_id=<?php echo $crop['id']; ?>" title="Delete" onclick="return confirm('Are you sure you want to delete this crop?');">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
                 <tr>
-                    <td><?php echo $crop['id']; ?></td>
-                    <td><?php echo $crop['crop_name']; ?></td>
-                    <td><?php echo $crop['quantity']; ?></td>
-                    <td>
-                        <a href="?delete_id=<?php echo $crop['id']; ?>" onclick="return confirm('Are you sure you want to delete this crop?');">Delete</a>
-                    </td>
+                    <td colspan="4">No crops found.</td>
                 </tr>
-            <?php endforeach; ?>
+            <?php endif; ?>
         </table>
     </div>
 </div>

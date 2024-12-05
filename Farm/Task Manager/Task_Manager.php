@@ -28,6 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $taskManager->createTask($task_name, $status, $due_date);
 }
 
+// Handle task deletion
+if (isset($_GET['delete_id'])) {
+    $taskId = $_GET['delete_id'];
+    $taskManager->deleteTask($taskId); // Call the deleteTask method from TaskManager
+    header("Location: Task_Manager.php"); // Redirect to the same page to avoid resubmission
+    exit();
+}
+
 // Fetch all tasks from the database
 $tasks = $taskManager->fetchAllTasks(); // Use the fetchAllTasks method
 
@@ -40,6 +48,7 @@ $sidebar->render();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../Design/taskmanager.css"> 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Add New Task</title>
 </head>
 <body>
@@ -72,17 +81,28 @@ $sidebar->render();
                 <th>Action</th>
             </tr>
         <tbody>
-            <?php foreach ($tasks as $task): ?>
+        <?php if (!empty($tasks)): ?>
+            <?php foreach ($tasks as $index => $task): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($task['id']); ?></td>
+                    <td><?php echo $index + 1; ?></td>
                     <td><?php echo htmlspecialchars($task['task_name']); ?></td>
                     <td><?php echo htmlspecialchars($task['status']); ?></td>
                     <td><?php echo htmlspecialchars($task['due_date']); ?></td>
                     <td>
-                        <a href="edit.php?id=<?php echo $task['id']; ?>" class="btn btn-warning btn-sm">Update</a>
+                        <a href="edit.php?id=<?php echo $task['id']; ?>" title="Update">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="delete.php?id=<?php echo $task['id']; ?>" title="Delete" onclick="return confirm('Are you sure you want to delete this task?');">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
                     </td>
                 </tr>
             <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="5">No tasks found.</td>
+            </tr>
+        <?php endif; ?>
         </tbody>
     </table>
 </div>
