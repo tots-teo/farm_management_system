@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <header>
         <nav>
             <ul>
-                <li><a href="index.php">HOME</a></li>
+                <li><a href="register.php">HOME</a></li>
                 <li><a href="#">ABOUT US</a></li>
                 <li><a href="#">CONTACT</a></li>
             </ul>

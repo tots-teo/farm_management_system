@@ -18,7 +18,7 @@ class Sidebar {
         echo '    <a href="../livestock management/livestock_management.php">';
         echo '        <img src="../Pictures/livestock.png" alt="Livestock">Livestock Management';
         echo '    </a>';
-        echo '    <a href="crop_management.php">';
+        echo '    <a href="../Crop Manangement/CropManagement.php">';
         echo '        <img src="../Pictures/crop.png" alt="Crops">Crop Management';
         echo '    </a>';
         echo '    <a href="feed_inventory.php">';
