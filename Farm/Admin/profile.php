@@ -1,7 +1,7 @@
 <?php
 session_start();
 include '../db.php'; // Include database connection
-include '../classes/user.php'; // Include the User class
+include '../Methods/user.php'; // Include the User class
 include '../Sidebar/sidebar.php';
 
 // Check if user is logged in
@@ -18,7 +18,7 @@ $userId = $_SESSION['user_id'];
 $userData = $user->getUserById($userId); // Corrected method name
 
 if (!$userData) {
-    echo "User not found.";
+    echo "User  not found.";
     exit();
 }
 
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Handle profile image upload
     if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] == UPLOAD_ERR_OK) {
-        $uploadDir = '../Upload Images/profile_images/';
+        $uploadDir = '../Admin/profile_images/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true); // Create directory if it doesn't exist
         }
@@ -50,7 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if (in_array($fileType, $allowedTypes)) {
             if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetFilePath)) {
+                // Update the profile image path
                 $profileImagePath = $targetFilePath;
+
                 // Delete old image if it exists
                 if (!empty($userData['profile_image']) && file_exists($userData['profile_image'])) {
                     unlink($userData['profile_image']);
@@ -64,16 +66,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Update user profile
-    $updateResult = $user->updateUser($userId, $firstName, $lastName, $email, $phone, $gender, $profileImagePath);
+    $updateResult = $user->updateUser ($userId, $firstName, $lastName, $email, $phone, $gender, $profileImagePath);
     if ($updateResult === true) {
         $successMessage = "Profile updated successfully.";
         // Refresh user data
-        $userData = $user->getUserById($userId); // Corrected method name
+        $userData = $user->getUserById($userId); // Fetch updated user data
     } else {
         $errorMessage = "Failed to update profile: " . $updateResult;
     }
 }
 
+// Render the sidebar
 $sidebar->render();
 ?>
 
@@ -126,8 +129,8 @@ $sidebar->render();
             <label for="profile_image">Profile Image:</label>
             <input type="file" id="profile_image" name="profile_image">
             <div class="profile-image-preview">
-                <?php if (!empty($userData['profile_image'])): ?>
-                    <img src="<?php echo $userData['profile_image']; ?>" alt="Profile Image" width="150">
+                <?php if (!empty($profileImagePath)): ?>
+                    <img src="<?php echo $profileImagePath; ?>" alt="Profile Image" width="150">
                 <?php else: ?>
                     <p>No image uploaded</p>
                 <?php endif; ?>
