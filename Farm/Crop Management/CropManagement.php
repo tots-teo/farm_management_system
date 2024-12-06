@@ -108,10 +108,7 @@ $sidebar->render();
                         <td><?php echo htmlspecialchars($crop['crop_name']); ?></td>
                         <td><?php echo htmlspecialchars($crop['quantity']); ?></td>
                         <td>
-                            <a href="view_crop.php?id=<?php echo $crop['id']; ?>" title="View">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="update_crop.php?id=<?php echo $crop['id']; ?>" title="Update">
+                            <a href="UpdateCrop.php?id=<?php echo $crop['id']; ?>" title="Update">
                                 <i class="fas fa-edit"></i>
                             </a>
                             <a href="?delete_id=<?php echo $crop['id']; ?>" title="Delete" onclick="return confirm('Are you sure you want to delete this crop?');">

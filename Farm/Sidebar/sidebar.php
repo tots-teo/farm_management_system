@@ -21,7 +21,7 @@ class Sidebar {
         echo '    <a href="../Crop Management/CropManagement.php">';
         echo '        <img src="../Pictures/crop.png" alt="Crops">Crop Management';
         echo '    </a>';
-        echo '    <a href="feed_inventory.php">';
+        echo '    <a href="../FeedInventory/feed_inventory.php">';
         echo '        <img src="../Pictures/feed_inventory.png" alt="Feed Inventory">Feed Inventory';
         echo '    </a>';
         echo '    <a href="../Task Manager/Task_Manager.php">';

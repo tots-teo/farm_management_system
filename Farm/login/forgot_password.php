@@ -75,13 +75,7 @@ $conn->close();
 </head>
 <body>
     <header>
-        <nav>
-            <ul>
-                <li><a href="index.php">HOME</a></li>
-                <li><a href="#">ABOUT US</a></li>
-                <li><a href="#">CONTACT</a></li>
-            </ul>
-        </nav>
+        
     </header>
 
     <div class="container">

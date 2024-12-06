@@ -42,13 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <header>
-        <nav>
-            <ul>
-                <li><a href="register.php">HOME</a></li>
-                <li><a href="#">ABOUT US</a></li>
-                <li><a href="#">CONTACT</a></li>
-            </ul>
-        </nav>
+        
     </header>
 
     <div class="container">
