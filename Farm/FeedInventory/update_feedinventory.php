@@ -1,30 +1,30 @@
 <?php
 session_start();
 
-// Check if user is logged in
+// CHECK PO KUNG SI USER AY NAKA LOGIN
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
     header("Location: login_page/login.php");
     exit();
 }
 
-// Initialize the role variable from the session
+// INITIALIZE ROLE
 $role = $_SESSION['role'];
 
-// Include necessary files
+// INCLUDE FILES
 include '../db.php';
-include '../FeedInventory/FeedManagere.php'; // Include the FeedManager class
+include '../FeedInventory/FeedManager.php'; 
 include '../Sidebar/sidebar.php';
 
-// Create an instance of FeedManager
+// INSTANTIATION
 $feedManager = new FeedManager($conn);
 $sidebar = new Sidebar($role);
 
-// Fetch feed details for the update form
+// FETCH FEED DETAILS FROM UPDATE FORM
 $feedId = $_GET['id'] ?? null;
 $feed = null;
 
 if ($feedId) {
-    $feed = $feedManager->getFeedById($feedId); // Fetch feed data by ID
+    $feed = $feedManager->getFeedById($feedId); 
     if (!$feed) {
         echo "Feed not found.";
         exit();
@@ -69,7 +69,6 @@ $sidebar->render();
             <p class="error-message"><?php echo htmlspecialchars($errorMessage); ?></p>
         <?php endif; ?>
 
-        <!-- Update Feed Form -->
         <form method="POST" action="">
             <div class="form-group">
                 <label for="feed_name">Feed Name:</label>

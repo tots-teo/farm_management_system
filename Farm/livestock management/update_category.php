@@ -12,7 +12,7 @@ $role = $_SESSION['role'];
 
 // Include necessary files
 include '../db.php';
-include '../classes/CategoryManager.php';
+include '../livestock management/CategoryManager.php';
 include '../Sidebar/sidebar.php';
 
 // Create instances
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fileName = $_FILES['image']['name'];
             $tempName = $_FILES['image']['tmp_name'];
             $uniqueFileName = uniqid() . '_' . $fileName;
-            $folder = '../Upload Images/' . $uniqueFileName;
+            $folder = '../livestock management/Upload Images/' . $uniqueFileName;
 
             // Update category picture in the database
             $stmt = $conn->prepare("UPDATE categories SET set_picture = ? WHERE id = ?");

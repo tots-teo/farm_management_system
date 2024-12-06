@@ -12,7 +12,7 @@ class Sidebar {
         echo '        <img src="../Pictures/mjck farm.jpg" alt="MJCK Farm Logo">';
         echo '        <h3>MJCK Farm</h3>';
         echo '    </div>';
-        echo '    <a href="../dashboard/dashboard.php">';
+        echo '    <a href="../Dashboard/dashboard.php">';
         echo '        <img src="../Pictures/dashboard.png" alt="Livestock">Dashboard';
         echo '    </a>';
         echo '    <a href="../livestock management/livestock_management.php">';
@@ -34,7 +34,7 @@ class Sidebar {
             echo '    </a>';
         }
 
-        echo '    <a href="../dashboard/logout.php" class="logout-btn">';
+        echo '    <a href="../Dashboard/logout.php" class="logout-btn">';
         echo '        <img src="../Pictures/logout.png" alt="Logout">Logout';
         echo '    </a>';
         echo '</div>';

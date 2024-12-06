@@ -1,67 +1,49 @@
 <?php
 include '../db.php';
 
-class PasswordReset {
-    private $conn;
-
-    public function __construct($databaseConnection) {
-        $this->conn = $databaseConnection;
-    }
-
-    public function addResetTokenColumn() {
-        $check_column = "SHOW COLUMNS FROM users LIKE 'reset_token'";
-        $result = $this->conn->query($check_column);
-
-        if ($result->num_rows == 0) {
-            $alter_table = "ALTER TABLE users ADD COLUMN reset_token VARCHAR(255) DEFAULT NULL";
-            if ($this->conn->query($alter_table) === TRUE) {
-                echo "Reset token column added successfully";
-            } else {
-                echo "Error adding reset token column: " . $this->conn->error;
-            }
-        }
-    }
-
-    public function requestPasswordReset($email) {
-        // Prepare statement to prevent SQL injection
-        $sql = "SELECT * FROM users WHERE email = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            // Generate a random token
-            $token = bin2hex(random_bytes(32));
-            // Update the user's reset token
-            $update_sql = "UPDATE users SET reset_token = ? WHERE email = ?";
-            $update_stmt = $this->conn->prepare($update_sql);
-            $update_stmt->bind_param("ss", $token, $email);
-
-            if ($update_stmt->execute()) {
-                $reset_link = "http://localhost/FinalPHP/reset_password.php?token=" . $token;
-                return "Password reset link (for demonstration): <br>" . $reset_link;
-            } else {
-                return "Error updating reset token.";
-            }
-        } else {
-            return "No account found with that email address.";
-        }
+class EmailHandler {
+    public function sendEmail($to, $subject, $message) {
+        $headers = "From: no-reply@yourdomain.com\r\n"; // Replace with your domain email
+        return mail($to, $subject, $message, $headers);
     }
 }
-
-// Usage
-$conn = new mysqli("localhost:3307", "root", "", "farm_management");
-$passwordReset = new PasswordReset($conn);
-$passwordReset->addResetTokenColumn();
 
 $message = "";
 if (isset($_POST['reset'])) {
     $email = $_POST['email'];
-    $message = $passwordReset->requestPasswordReset($email);
-}
 
-$conn->close();
+    $sql = "SELECT * FROM users WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        // Generate a unique token
+        $token = bin2hex(random_bytes(50)); // Generate a random token
+        $stmt = $conn->prepare("UPDATE users SET reset_token = ? WHERE email = ?");
+        $stmt->bind_param("ss", $token, $email);
+        $stmt->execute();
+
+        // Send email with reset link
+        $emailHandler = new EmailHandler();
+        $to = $email; // User's email
+        $subject = "Password Reset Request";
+        $resetLink = "localhost/finalphp/Farm/login/reset_password.php?token=" . $token; // Update with your domain
+        $messageBody = "You have requested to reset your password.\n\n" .
+                       "Please copy the link below to reset your password:\n" .
+                       $resetLink . "\n\n" .
+                       "If you did not request this, please ignore this email.";
+
+        if ($emailHandler->sendEmail($to, $subject, $messageBody)) {
+            $message = "A password reset email has been sent to your email address.";
+        } else {
+            $message = "Failed to send the email.";
+        }
+    } else {
+        $message = "No account found with that email address.";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -71,23 +53,16 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MJCK Farm Management - Forgot Password</title>
     <link rel="stylesheet" href="../styles.css">
-    
 </head>
 <body>
-    <header>
-        
-    </header>
+    <header></header>
 
     <div class="container">
-        <div class="welcome">
-            Forgot Your Password?
-        </div>
+        <div class="welcome">Forgot Your Password?</div>
 
         <div class="form-container">
             <?php if ($message): ?>
-                <div class="message">
-                    <?php echo $message; ?>
-                </div>
+                <div class="message"><?php echo $message; ?></div>
             <?php endif; ?>
 
             <form action="forgot_password.php" method="POST">

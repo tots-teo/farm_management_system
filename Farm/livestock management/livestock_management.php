@@ -13,7 +13,7 @@ $role = $_SESSION['role'];
 // Include necessary files
 include 'livestock.php';
 include '../db.php';
-include '../classes/CategoryManager.php';
+include '../livestock management/CategoryManager.php';
 include '../Sidebar/sidebar.php';
 
 // Create instances

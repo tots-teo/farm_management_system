@@ -1,10 +1,12 @@
 <?php
+//INCLUDE FILES
 require_once '../db.php';
-require_once '../classes/user.php';
-require_once '../classes/validator.php';
-require_once '../classes/ErrorHandler.php';
-require_once '../classes/Database.php';
+require_once '../Methods/user.php';
+require_once '../Methods/validator.php';
+require_once '../Methods/ErrorHandler.php';
+require_once '../Methods/Database.php';
 
+//CREATING CLASS
 class Registration {
     private $database;
     private $conn;

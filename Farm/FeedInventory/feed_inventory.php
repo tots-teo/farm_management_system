@@ -12,7 +12,7 @@ $role = $_SESSION['role'];
 
 // Include necessary files
 include '../db.php';
-include '../FeedInventory/FeedManagere.php'; // Assuming you have a FeedManager class for handling feed operations
+include '../FeedInventory/FeedManager.php'; // Assuming you have a FeedManager class for handling feed operations
 include '../Sidebar/sidebar.php';
 
 // Create instances
@@ -50,19 +50,19 @@ $feedTypes = [
         'types' => [
             [
                 'name' => 'Pre-Starter',
-                'image' => '../Images/pre-starter.png' // Path to the image for pre-starter pig feed
+                'image' => '../FeedInventory/Images/pre-starter.png' // Path to the image for pre-starter pig feed
             ],
             [
                 'name' => 'Starter',
-                'image' => '../Images/pig-starter.jpg' // Path to the image for starter pig feed
+                'image' => '../FeedInventory/Images/pig-starter.jpg' // Path to the image for starter pig feed
             ],
             [
                 'name' => 'Grower',
-                'image' => '../Images/grower.png' // Path to the image for grower pig feed
+                'image' => '../FeedInventory/Images/grower.png' // Path to the image for grower pig feed
             ],
             [
                 'name' => 'Breeder',
-                'image' => '../Images/breeder.png' // Path to the image for breeder pig feed
+                'image' => '../FeedInventory/Images/breeder.png' // Path to the image for breeder pig feed
             ]
         ]
     ],
@@ -70,19 +70,19 @@ $feedTypes = [
         'types' => [
             [
                 'name' => 'Integra 1000',
-                'image' => '../Images/integra_1000.jpg' // Path to the image for Integra 1000 chicken feed
+                'image' => '../FeedInventory/Images/integra_1000.jpg' // Path to the image for Integra 1000 chicken feed
             ],
             [
                 'name' => 'Integra 2000',
-                'image' => '../Images/integra_2000.jpg' // Path to the image for Integra 2000 chicken feed
+                'image' => '../FeedInventory/Images/integra_2000.jpg' // Path to the image for Integra 2000 chicken feed
             ],
             [
                 'name' => 'Integra 2500',
-                'image' => '../Images/integra_2500.jpg' // Path to the image for Integra 2500 chicken feed
+                'image' => '../FeedInventory/Images/integra_2500.jpg' // Path to the image for Integra 2500 chicken feed
             ],
             [
                 'name' => 'Integra 3000',
-                'image' => '../Images/integra_3000.jpg' // Path to the image for Integra 3000 chicken feed
+                'image' => '../FeedInventory/Images/integra_3000.jpg' // Path to the image for Integra 3000 chicken feed
             ]
         ]
     ],
@@ -90,15 +90,15 @@ $feedTypes = [
         'types' => [
             [
                 'name' => 'Cattle Grower',
-                'image' => '../Images/cattle_grower.jpg' // Path to the image for cattle grower feed
+                'image' => '../FeedInventory/Images/cattle_grower.jpg' // Path to the image for cattle grower feed
             ],
             [
                 'name' => 'Dairy Cattle',
-                'image' => '../Images/dairy_cattle.jpg' // Path to the image for dairy cattle feed
+                'image' => '../FeedInventory/Images/dairy_cattle.jpg' // Path to the image for dairy cattle feed
             ],
             [
                 'name' => 'Hay',
-                'image' => '../Images/hay.jpg' // Path to the image for hay feed
+                'image' => '../FeedInventory/Images/hay.jpg' // Path to the image for hay feed
             ]
         ]
     ],
@@ -106,11 +106,11 @@ $feedTypes = [
         'types' => [
             [
                 'name' => 'Goat 16',
-                'image' => '../Images/goat_16.jpg' // Path to the image for Goat 16 feed
+                'image' => '../FeedInventory/Images/goat_16.jpg' // Path to the image for Goat 16 feed
             ],
             [
                 'name' => 'Hay',
-                'image' => '../Images/hay.jpg' // Path to the image for goat hay feed
+                'image' => '../FeedInventory/Images/hay.jpg' // Path to the image for goat hay feed
             ]
         ]
     ]

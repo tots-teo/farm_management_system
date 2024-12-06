@@ -11,21 +11,18 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
 $role = $_SESSION['role'];
 
 // Include the dashboard functions file for statistics
-include '../dashboard/dashboardfunction.php';
+include '../Dashboard/dashboardfunction.php';
 include '../db.php'; // Include the database connection
 include '../Sidebar/sidebar.php';
 
 // Create an instance of DashboardStats
 $dashboardStats = new DashboardStats($conn);
 $stats = $dashboardStats->updateStats();
+$numberOfAdmins = $dashboardStats->getNumberOfAdmins(); 
 $numberOfTasks = $dashboardStats->getNumberOfTasks(); 
 $sidebar = new Sidebar($role);
 
 $sidebar->render();
-
-// Fetch statistics
-$numberOfAdmins = 1;
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,7 +45,7 @@ $numberOfAdmins = 1;
             </div>
             <div class="stats-box">
                 <h4>Number of Livestock</h4>
-                <p><?php echo $dashboardStats->updateStats(); ?></p>
+                <p><?php echo $stats; ?></p>
             </div>
             <div class="stats-box">
                 <h4>Number of Admins</h4>

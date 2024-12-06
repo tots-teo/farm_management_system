@@ -145,10 +145,11 @@ button:hover {
 }
 
 .profile-image-preview img {
-    display: block;
-    margin: auto;
-    border-radius: 50%;
-    border: 2px solid #ddd;
+    width: 150px; /* Set a fixed width */
+    height: 150px; /* Set a fixed height for square */
+    object-fit: cover; /* Cover the area while maintaining aspect ratio */
+    border-radius: 10px; /* Optional: Add rounded corners */
+    border: 2px solid #ddd; /* Optional: Add a border */
 }
 
 .success-message {

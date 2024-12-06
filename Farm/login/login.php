@@ -1,33 +1,32 @@
 <?php
+//INCLUDE FILES
 require_once '../db.php';
-require_once '../classes/user.php';
-require_once '../classes/sessionManager.php';
-require_once '../classes/Database.php';
+require_once '../Methods/user.php';
+require_once '../Methods/sessionManager.php';
+require_once '../Methods/Database.php';
 
-// Create a single instance of SessionManager which will handle session start
+//CREATE INTANTIATION
 $sessionManager = new SessionManager();
-
-// Initialize variables to avoid undefined variable warnings
-$registration_success = null; // Initialize to null
-$error_message = null; // Initialize to null
+$registration_success = null; 
+$error_message = null;
 
 $database = new Database('localhost:3307', 'root', '', 'farm_management');
-$conn = $database->getConnection();
+$conn = $database->getConnection(); //GET THE DB CONNECTION
 
-// Handle login form submission
+// HANDLE LOGIN FORM SUBMISSION
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
     // Pass the database connection to the User class
-    $user = new User($conn);
-    $loggedInUser   = $user->login($email, $password);
-    if ($loggedInUser ) {
-        $sessionManager->setUserSession($loggedInUser );
-        header("Location: ../dashboard/dashboard.php");
+    $user = new User($conn); //CREATE USER INSTANTIATION
+    $loggedInUser   = $user->login($email, $password); //ATTEMPT TO LOGIN USER
+    if ($loggedInUser ) { //IF USER IS LOGGED IN
+        $sessionManager->setUserSession($loggedInUser ); //REDIRECT NA SA DASHBOARD
+        header("Location: ../Dashboard/dashboard.php");
         exit();
     } else {
-        $error_message = "Invalid email or password.";
+        $error_message = "Invalid email or password."; //MALI CREDENTIALS
     }
 }
 ?>
